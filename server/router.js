@@ -2,7 +2,6 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-
   app.get('/p/:id', controllers.Personality.view);
 
   app.get('/p/view/:id', controllers.Personality.p);
@@ -24,7 +23,6 @@ const router = (app) => {
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.get('/*', controllers.Account.notFound);
-
 };
 
 module.exports = router;

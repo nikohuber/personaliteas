@@ -1,4 +1,3 @@
-const { template } = require('underscore');
 const models = require('../models');
 
 const { Personality, Settings } = models;
@@ -31,6 +30,11 @@ const home = (req, res) => res.render('app');
 
 const view = (req, res) => res.render('view');
 
+/* const getPersonObject = async (person) => {
+  const docs = await Personality.find({ owner: person.owner }).select('name url').lean().exec();
+  return docs;
+}; */
+
 const p = async (req, res) => {
   // console.log(req.params);
   try {
@@ -40,18 +44,59 @@ const p = async (req, res) => {
       return res.json({ error: 'Personalitea not found...' });
     }
 
-    //const docs = await Personality.find(people[0].owner).select('name url').lean().exec();
-
     let temp = [];
 
-    for(let person of people) {
-      let docs = await Personality.find({owner: person.owner}).select('name url').lean().exec();
+    /* eslint no-restricted-syntax: "off" */
+    for await (const person of people) {
+      const docs = await Personality.find({ owner: person.owner }).select('name url').lean().exec();
       temp = temp.concat(docs);
       console.log(docs);
     }
 
+    // alternatively can be hardcoded to return one person that doesn't bypass airbnb,
+    // that async for-of allows for multiple users to be returned that share the same source url.
+
+    /*
+    const docs = await Personality.find({owner: people[0].owner}).select('name url').lean().exec();
+    temp = docs; */
+
     // console.log(docs);
     return res.json({ ps: temp });
+
+    //
+    // Various Failed Attempts at Recreating that async for loop...
+    //
+
+    // const docs = await Personality.find(people[0].owner).select('name url').lean().exec();
+
+    /*
+    let obj = [];
+
+    people.forEach((person) => {
+
+      let temp = [];
+  // const docs = await Personality.find({ owner: person.owner }).select('name url').lean().exec();
+      let a = getPersonObject(person).then((data) => {
+        let a = temp.concat(data);
+        return a;
+      });
+      console.log(temp);
+      a.then((data) => {
+        temp = temp.concat(data);
+      });
+    }); */
+
+    // console.log(temp);
+
+    /* for (const person of people) {
+      const docs = await Personality.find({ owner: person.owner }).select('name url').lean().exec();
+      // const docs = getPersonObject(person);
+      temp = temp.concat(docs);
+      // console.log(docs);
+    } */
+
+    // console.log(docs);
+    // return res.json({ ps: obj });
 
     /* for(let p of person){
       console.log(p.owner);
