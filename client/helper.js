@@ -1,6 +1,6 @@
 const handleError = (message) => {
   document.getElementById('errorMessage').textContent = message;
-  document.getElementById('domoMessage').classList.remove('hidden');
+  document.getElementById('pMessage').classList.remove('hidden');
 };
 
 /* Sends post requests to the server using fetch. Will look for various
@@ -17,7 +17,7 @@ const sendPost = async (url, data, type, handler) => {
   });
 
   const result = await response.json();
-  document.getElementById('domoMessage').classList.add('hidden');
+  document.getElementById('pMessage').classList.add('hidden');
 
   if(result.redirect) {
     window.location = result.redirect;
@@ -33,7 +33,7 @@ const sendPost = async (url, data, type, handler) => {
 };
 
 const hideError = () => {
-  document.getElementById('domoMessage').classList.add('hidden');
+  document.getElementById('pMessage').classList.add('hidden');
 };
 
 module.exports = {

@@ -1,6 +1,7 @@
+const { template } = require('underscore');
 const models = require('../models');
 
-const { Personality } = models;
+const { Personality, Settings } = models;
 
 const makeP = async (req, res) => {
   console.log(req);
@@ -28,12 +29,35 @@ const makeP = async (req, res) => {
 
 const home = (req, res) => res.render('app');
 
+const view = (req, res) => res.render('view');
+
 const p = async (req, res) => {
-  console.log(req.params);
+  // console.log(req.params);
   try {
-    const query = { owner: req.params.id };
-    const docs = await Personality.find(query).select('name url').lean().exec();
-    return res.json({ ps: docs });
+    const query = { url: req.params.id };
+    const people = await Settings.find(query).select('owner').lean().exec();
+    if (people.length === 0) {
+      return res.json({ error: 'Personalitea not found...' });
+    }
+
+    //const docs = await Personality.find(people[0].owner).select('name url').lean().exec();
+
+    let temp = [];
+
+    for(let person of people) {
+      let docs = await Personality.find({owner: person.owner}).select('name url').lean().exec();
+      temp = temp.concat(docs);
+      console.log(docs);
+    }
+
+    // console.log(docs);
+    return res.json({ ps: temp });
+
+    /* for(let p of person){
+      console.log(p.owner);
+      const temp = await Personality.find(p.owner).select('name url').lean().exec();
+      docs += temp;
+    } */
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error retrieving personalitea!' });
@@ -64,4 +88,5 @@ module.exports = {
   getP,
   deleteP,
   p,
+  view,
 };

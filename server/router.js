@@ -2,7 +2,12 @@ const controllers = require('./controllers');
 const mid = require('./middleware');
 
 const router = (app) => {
-  app.get('/p/:id', controllers.Personality.p);
+
+  app.get('/p/:id', controllers.Personality.view);
+
+  app.get('/p/view/:id', controllers.Personality.p);
+
+  app.post('/s', mid.requiresLogin, controllers.Settings.updateSettings);
 
   app.get('/getP', mid.requiresLogin, controllers.Personality.getP);
 
@@ -18,6 +23,8 @@ const router = (app) => {
   app.delete('/home', mid.requiresLogin, controllers.Personality.deleteP);
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/*', controllers.Account.notFound);
+
 };
 
 module.exports = router;

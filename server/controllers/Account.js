@@ -9,11 +9,14 @@ const logout = (req, res) => {
   res.redirect('/');
 };
 
+const notFound = (req, res) => res.render('notFound');
+
 const CreateSettings = async (user) => {
   console.log(user._id);
 
   const sData = {
     owner: user._id,
+    url: user._id,
   };
 
   try {
@@ -75,4 +78,5 @@ module.exports = {
   logout,
   login,
   signup,
+  notFound,
 };
